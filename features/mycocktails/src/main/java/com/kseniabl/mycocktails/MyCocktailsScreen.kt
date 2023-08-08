@@ -1,5 +1,12 @@
 package com.kseniabl.mycocktails
 
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -33,15 +40,21 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -55,6 +68,17 @@ fun EmptyCocktailsScreen(
     modifier: Modifier = Modifier,
     navigateToCreateCocktail: () -> Unit
 ) {
+    val infiniteTransition = rememberInfiniteTransition(label = "")
+
+    val sizeValue by infiniteTransition.animateFloat(
+        initialValue = 0.dp.value,
+        targetValue = 5.dp.value,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 1000, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse,
+        ), label = ""
+    )
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -71,17 +95,19 @@ fun EmptyCocktailsScreen(
         Spacer(modifier = Modifier.height(24.dp))
         Text(text = "My cocktails", fontSize = 36.sp,
             fontFamily = DidactGothic)
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(18.dp))
         Text(text = "Add your first cocktail here", fontSize = 16.sp,
             fontFamily = DidactGothic, modifier = Modifier
                 .alpha(0.5F)
-                .width(100.dp)
+                .width(160.dp), textAlign = TextAlign.Center
         )
-        Spacer(modifier = Modifier.height(Dp(16F)))
-        Image(painter = painterResource(id = R.drawable.arrow),
+        Spacer(modifier = Modifier.height(16.dp))
+        Image(
+            painter = painterResource(id = R.drawable.arrow),
             contentDescription = "arrow", modifier = Modifier
                 .size(48.dp)
-                .alpha(0.3F))
+                .alpha(0.3F)
+                .graphicsLayer(translationY = sizeValue))
         Spacer(modifier = Modifier.height(16.dp))
         Box(modifier = Modifier
             .size(64.dp)
