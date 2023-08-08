@@ -15,7 +15,7 @@ class CocktailDatabaseRepositoryImpl @Inject constructor(
         dao.loadCocktails()
 
 
-    override fun insertCocktail(cocktail: List<CocktailModel>) {
+    override fun insertCocktail(cocktail: CocktailModel) {
         CoroutineScope(Dispatchers.IO).launch {
             dao.insertCocktail(cocktail)
         }

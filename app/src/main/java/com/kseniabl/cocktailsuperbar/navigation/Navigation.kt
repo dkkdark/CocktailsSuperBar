@@ -7,6 +7,7 @@ import com.kseniabl.makecocktail.ui.navigation.createCocktailScreen
 import com.kseniabl.makecocktail.ui.navigation.navigateToCreateCocktail
 import com.kseniabl.mycocktails.navigation.mycocktailsRoute
 import com.kseniabl.mycocktails.navigation.mycocktailsScreen
+import com.kseniabl.mycocktails.navigation.navigateToMycocktails
 
 @Composable
 fun CocktailNavHost(
@@ -14,6 +15,6 @@ fun CocktailNavHost(
 ) {
     NavHost(navController, startDestination = mycocktailsRoute) {
         mycocktailsScreen(navController::navigateToCreateCocktail)
-        createCocktailScreen()
+        createCocktailScreen(navController::navigateToMycocktails)
     }
 }

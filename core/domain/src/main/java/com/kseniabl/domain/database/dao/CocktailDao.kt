@@ -15,7 +15,7 @@ interface CocktailDao {
     fun loadCocktails(): Flow<List<CocktailModel>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertCocktail(item: List<CocktailModel>)
+    fun insertCocktail(item: CocktailModel)
 
     @Update
     fun updateCocktail(item: CocktailModel)
