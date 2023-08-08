@@ -20,7 +20,6 @@ class CocktailDatabaseRepositoryImpl @Inject constructor(
     override fun insertCocktail(cocktail: CocktailModel) {
         CoroutineScope(Dispatchers.IO).launch {
             dao.insertCocktail(cocktail)
-            Log.e("qqq", "fdf")
         }
     }
 

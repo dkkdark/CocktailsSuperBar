@@ -14,7 +14,10 @@ fun CocktailNavHost(
     navController: NavHostController
 ) {
     NavHost(navController, startDestination = mycocktailsRoute) {
-        mycocktailsScreen(navController::navigateToCreateCocktail)
+        mycocktailsScreen(navController::navigateToCreateCocktail) {
+            // TODO: navigate to detail
+        }
         createCocktailScreen(navController::navigateToMycocktails)
+
     }
 }

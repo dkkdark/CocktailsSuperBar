@@ -29,7 +29,6 @@ class CreateCocktailViewModel @Inject constructor(
         try {
             saveCocktailUseCase(name, description, recipe, ingredients, time)
             _state.value = SavingCocktailState.Success
-            Log.e("qqq", "cocktail saved")
         } catch (e: Exception) {
             _state.value = SavingCocktailState.Error
         }

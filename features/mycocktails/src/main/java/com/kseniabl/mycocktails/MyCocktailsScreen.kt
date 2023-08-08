@@ -1,7 +1,8 @@
 package com.kseniabl.mycocktails
 
-import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,10 +13,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -43,6 +47,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.kseniabl.mycocktails.entity.Cocktail
+import com.kseniabl.theme.AppBlue
 import com.kseniabl.theme.DidactGothic
 
 @Composable
@@ -78,10 +83,13 @@ fun EmptyCocktailsScreen(
                 .size(48.dp)
                 .alpha(0.3F))
         Spacer(modifier = Modifier.height(16.dp))
-        LargeFloatingActionButton(
-            onClick = { navigateToCreateCocktail() }
-        ) {
-            Icon(Icons.Default.Add, contentDescription = null)
+        Box(modifier = Modifier
+            .size(64.dp)
+            .background(AppBlue, shape = CircleShape)
+            .align(Alignment.CenterHorizontally)
+            .clickable { navigateToCreateCocktail() },
+            contentAlignment = Alignment.Center) {
+            Icon(Icons.Default.Add, contentDescription = null, tint = Color.White)
         }
     }
 }
@@ -90,12 +98,12 @@ fun EmptyCocktailsScreen(
 @Composable
 fun MyCocktailsScreen(
     navigateToCreateCocktail: () -> Unit,
-    viewModel: MyCocktailViewModel = hiltViewModel()
+    viewModel: MyCocktailViewModel = hiltViewModel(),
+    onItemClicked: () -> Unit
 ) {
 
     val cocktails = viewModel.cocktails.collectAsState()
     val isListEmpty = cocktails.value?.isEmpty()
-    Log.e("qqq", "cocktails ${cocktails.value}")
 
     Scaffold(
         bottomBar = {
@@ -107,7 +115,7 @@ fun MyCocktailsScreen(
                 navigateToCreateCocktail()
             }
         if (isListEmpty == false && !cocktails.value.isNullOrEmpty())
-            MyCocktailsContent(Modifier.padding(it), cocktails.value!!)
+            MyCocktailsContent(Modifier.padding(it), cocktails.value!!, onItemClicked)
     }
 
 }
@@ -115,7 +123,8 @@ fun MyCocktailsScreen(
 @Composable
 fun MyCocktailsContent(
     modifier: Modifier = Modifier,
-    cocktailList: List<Cocktail>
+    cocktailList: List<Cocktail>,
+    onItemClicked: () -> Unit
 ) {
     val lazyGridState = rememberLazyGridState()
 
@@ -135,7 +144,7 @@ fun MyCocktailsContent(
             horizontalArrangement = Arrangement.SpaceAround
         ) {
             items(cocktailList) {
-                CocktailElement(it)
+                CocktailElement(it, onItemClicked)
             }
         }
     }
@@ -143,7 +152,8 @@ fun MyCocktailsContent(
 
 @Composable
 fun CocktailElement(
-    cocktail: Cocktail
+    cocktail: Cocktail,
+    onItemClicked: () -> Unit
 ) {
     val matrix = ColorMatrix()
     matrix.setToSaturation(0.7F)
@@ -151,7 +161,8 @@ fun CocktailElement(
     Card(
         modifier = Modifier
             .size(160.dp)
-            .padding(4.dp),
+            .padding(4.dp)
+            .clickable { onItemClicked() },
         shape = RoundedCornerShape(38.dp),
     ) {
         Box {
@@ -186,13 +197,16 @@ fun RoundedCornerBottomBar(navigateToCreateCocktail: () -> Unit) {
             modifier = Modifier
                 .fillMaxSize(),
             shape = RoundedCornerShape(topStart = 42.dp, topEnd = 42.dp),
-            elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = 18.dp),
+            colors = CardDefaults.cardColors(containerColor = Color.White)
         ) {
-            FloatingActionButton(
-                modifier = Modifier.align(Alignment.CenterHorizontally),
-                onClick = { navigateToCreateCocktail() }
-            ) {
-                Icon(Icons.Default.Add, contentDescription = null)
+            Box(modifier = Modifier
+                .size(56.dp)
+                .background(AppBlue, shape = CircleShape)
+                .align(Alignment.CenterHorizontally)
+                .clickable { navigateToCreateCocktail() },
+                contentAlignment = Alignment.Center) {
+                Icon(Icons.Default.Add, contentDescription = null, tint = Color.White)
             }
         }
     }

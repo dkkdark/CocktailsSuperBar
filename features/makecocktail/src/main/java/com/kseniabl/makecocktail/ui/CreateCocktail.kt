@@ -160,7 +160,7 @@ fun CreateCocktailScreen(
             Column(
                 modifier = Modifier
                     .wrapContentSize()
-                    .background(MaterialTheme.colorScheme.background)
+                    .background(MaterialTheme.colorScheme.background, shape = CircleShape)
                     .padding(top = 24.dp, bottom = 18.dp, start = 12.dp, end = 12.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top

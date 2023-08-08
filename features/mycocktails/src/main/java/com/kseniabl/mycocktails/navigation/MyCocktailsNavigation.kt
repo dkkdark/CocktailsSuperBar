@@ -12,8 +12,8 @@ fun NavController.navigateToMycocktails(navOptions: NavOptions? = null) {
     this.navigate(mycocktailsRoute, navOptions)
 }
 
-fun NavGraphBuilder.mycocktailsScreen(navigateToCreateCocktail: () -> Unit) {
+fun NavGraphBuilder.mycocktailsScreen(navigateToCreateCocktail: () -> Unit, onItemClicked: () -> Unit) {
     composable(route = mycocktailsRoute) {
-        MyCocktailsScreen(navigateToCreateCocktail)
+        MyCocktailsScreen(navigateToCreateCocktail, onItemClicked = onItemClicked)
     }
 }
