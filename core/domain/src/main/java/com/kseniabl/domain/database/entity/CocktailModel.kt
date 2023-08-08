@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class CocktailModel(
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     val name: String = "",
     val description: String = "",

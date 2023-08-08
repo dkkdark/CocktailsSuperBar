@@ -1,34 +1,19 @@
 package com.kseniabl.makecocktail.ui
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.kseniabl.domain.database.entity.Cocktail
-import com.kseniabl.domain.usecase.GetRecentCocktailsUseCase
 import com.kseniabl.domain.usecase.SaveCocktailUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
 class CreateCocktailViewModel @Inject constructor(
-    val saveCocktailUseCase: SaveCocktailUseCase,
-    val getRecentCocktailsUseCase: GetRecentCocktailsUseCase
+    val saveCocktailUseCase: SaveCocktailUseCase
 ): ViewModel() {
 
-    val cocktails: StateFlow<List<Cocktail>> = getRecentCocktailsUseCase().map {
-        emptyList<Cocktail>()
-    }.stateIn(
-        scope = viewModelScope,
-        initialValue = emptyList(),
-        started = SharingStarted.WhileSubscribed(5_000),
-    )
-
-    private val _state = MutableStateFlow<SavingCocktailState>(SavingCocktailState.Loading)
+    private val _state = MutableStateFlow<SavingCocktailState?>(null)
     val state = _state.asStateFlow()
 
     fun checkFields(title: String, description: String, recipe: String, ingredients: List<String>, time: Long) {
@@ -44,6 +29,7 @@ class CreateCocktailViewModel @Inject constructor(
         try {
             saveCocktailUseCase(name, description, recipe, ingredients, time)
             _state.value = SavingCocktailState.Success
+            Log.e("qqq", "cocktail saved")
         } catch (e: Exception) {
             _state.value = SavingCocktailState.Error
         }

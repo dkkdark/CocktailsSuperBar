@@ -6,8 +6,8 @@ import com.kseniabl.domain.database.entity.CocktailModel
 
 class TypeConverter {
     @TypeConverter
-    fun listToJsonString(value: List<CocktailModel>?): String = Gson().toJson(value)
+    fun listToJsonString(value: List<String>?): String = Gson().toJson(value)
 
     @TypeConverter
-    fun jsonStringToList(value: String) = Gson().fromJson(value, Array<CocktailModel>::class.java).toList()
+    fun jsonStringToList(value: String) = Gson().fromJson(value, Array<String>::class.java).toList()
 }

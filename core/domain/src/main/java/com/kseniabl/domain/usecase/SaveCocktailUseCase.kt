@@ -1,10 +1,8 @@
 package com.kseniabl.domain.usecase
 
-import com.kseniabl.domain.database.entity.Cocktail
+import android.util.Log
 import com.kseniabl.domain.database.entity.CocktailModel
 import com.kseniabl.domain.repository.CocktailDatabaseRepository
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class SaveCocktailUseCase @Inject constructor(
@@ -16,7 +14,15 @@ class SaveCocktailUseCase @Inject constructor(
         recipe: String,
         ingredients: List<String>,
         date: Long
-    ) =
-        repository.insertCocktail(CocktailModel(name = name, description = description, recipe = recipe, createdAt = date, ingredients = ingredients))
-
+    ) {
+        repository.insertCocktail(
+            CocktailModel(
+                name = name,
+                description = description,
+                recipe = recipe,
+                createdAt = date,
+                ingredients = ingredients
+            )
+        )
+    }
 }
