@@ -17,3 +17,4 @@ rootProject.name = "CocktailSuperBar"
 include(":app")
 include(":core:theme")
 include(":features:makecocktail")
+include(":features:mycocktails")
