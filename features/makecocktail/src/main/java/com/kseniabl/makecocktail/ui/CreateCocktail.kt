@@ -11,14 +11,11 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -41,7 +38,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -53,13 +49,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -125,7 +118,8 @@ fun CreateCocktailScreen(
             .padding(all = 16.dp)
             .verticalScroll(scrollableState),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top) {
+        verticalArrangement = Arrangement.Top
+    ) {
         Image(
             modifier = Modifier.size(200.dp),
             painter = painterResource(id = R.drawable.placeholder),
@@ -135,14 +129,14 @@ fun CreateCocktailScreen(
         Spacer(modifier = Modifier.height(40.dp))
         CocktailTextField(title, "Title", "Add title", 56.dp, notCorrectDataShow) { title = it }
         Spacer(modifier = Modifier.height(24.dp))
-        CocktailTextField(description, "Description", "Optional field", 154.dp) {description = it}
+        CocktailTextField(description, "Description", "Optional field", 154.dp) { description = it }
         Spacer(modifier = Modifier.height(24.dp))
         IngredientsList(items = ingredients) {
             ingredientText = ""
             showDialog = true
         }
         Spacer(modifier = Modifier.height(24.dp))
-        CocktailTextField(recipe, "Recipe", "Optional field", 154.dp) {recipe = it}
+        CocktailTextField(recipe, "Recipe", "Optional field", 154.dp) { recipe = it }
         Spacer(modifier = Modifier.height(24.dp))
         CocktailButton(text = "Save", textColor = Color.White, buttonColor = AppBlue) {
             val time = Calendar.getInstance().time.time
@@ -240,7 +234,10 @@ fun CocktailButton(
             .height(55.dp),
         onClick = { onButtonClick() },
         colors = ButtonDefaults.buttonColors(containerColor = buttonColor),
-        border = if (textColor != Color.White) BorderStroke(1.dp, textColor) else BorderStroke(1.dp, buttonColor)
+        border = if (textColor != Color.White) BorderStroke(1.dp, textColor) else BorderStroke(
+            1.dp,
+            buttonColor
+        )
     ) {
         Text(text, fontFamily = DidactGothic, fontSize = 24.sp, color = textColor)
     }
@@ -291,15 +288,19 @@ fun IngredientsList(items: List<String>, onClick: () -> Unit) {
 fun IngredientEl(
     el: String
 ) {
-    Row(modifier = Modifier
-        .wrapContentSize()
-        .padding(horizontal = 8.dp)
-        .background(MaterialTheme.colorScheme.background)
-        .border(1.dp, Color.Gray, shape = CircleShape)) {
+    Row(
+        modifier = Modifier
+            .wrapContentSize()
+            .padding(horizontal = 8.dp)
+            .background(MaterialTheme.colorScheme.background)
+            .border(1.dp, Color.Gray, shape = CircleShape)
+    ) {
         Spacer(modifier = Modifier.width(6.dp))
         Text(el, fontFamily = DidactGothic, fontSize = 12.sp)
-        Icon(modifier = Modifier.size(18.dp),
-           imageVector = Icons.Default.Close, contentDescription = null, tint = AppBlue)
+        Icon(
+            modifier = Modifier.size(18.dp),
+            imageVector = Icons.Default.Close, contentDescription = null, tint = AppBlue
+        )
         Spacer(modifier = Modifier.width(6.dp))
     }
 }

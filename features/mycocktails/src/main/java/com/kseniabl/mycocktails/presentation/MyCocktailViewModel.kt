@@ -1,9 +1,10 @@
-package com.kseniabl.mycocktails
+package com.kseniabl.mycocktails.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kseniabl.domain.database.entity.CocktailModel
 import com.kseniabl.domain.usecase.GetRecentCocktailsUseCase
+import com.kseniabl.mycocktails.R
 import com.kseniabl.mycocktails.entity.Cocktail
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow

@@ -1,6 +1,5 @@
 package com.kseniabl.domain.usecase
 
-import android.util.Log
 import com.kseniabl.domain.database.entity.CocktailModel
 import com.kseniabl.domain.repository.CocktailDatabaseRepository
 import javax.inject.Inject

@@ -4,7 +4,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
-import com.kseniabl.mycocktails.MyCocktailsScreen
+import com.kseniabl.mycocktails.presentation.MyCocktailsScreen
 
 const val mycocktailsRoute = "mycocktails_route"
 
