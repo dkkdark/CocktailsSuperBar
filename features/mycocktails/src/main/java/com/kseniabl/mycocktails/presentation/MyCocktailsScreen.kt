@@ -126,7 +126,7 @@ fun EmptyCocktailsScreen(
 fun MyCocktailsScreen(
     navigateToCreateCocktail: () -> Unit,
     viewModel: MyCocktailViewModel = hiltViewModel(),
-    onItemClicked: () -> Unit
+    onItemClicked: (Cocktail) -> Unit
 ) {
     val cocktails = viewModel.cocktails.collectAsState()
     val isListEmpty = cocktails.value?.isEmpty()
@@ -152,7 +152,7 @@ fun MyCocktailsScreen(
 fun MyCocktailsContent(
     modifier: Modifier = Modifier,
     cocktailList: List<Cocktail>,
-    onItemClicked: () -> Unit
+    onItemClicked: (Cocktail) -> Unit
 ) {
     val lazyGridState = rememberLazyGridState()
 
@@ -175,7 +175,7 @@ fun MyCocktailsContent(
             contentPadding = PaddingValues(bottom = 68.dp)
         ) {
             items(cocktailList) {
-                CocktailElement(it, onItemClicked)
+                CocktailElement(it, onItemClicked )
             }
         }
     }
@@ -184,7 +184,7 @@ fun MyCocktailsContent(
 @Composable
 fun CocktailElement(
     cocktail: Cocktail,
-    onItemClicked: () -> Unit
+    onItemClicked: (Cocktail) -> Unit
 ) {
     val matrix = ColorMatrix()
     matrix.setToSaturation(0.7F)
@@ -193,7 +193,7 @@ fun CocktailElement(
         modifier = Modifier
             .size(160.dp)
             .padding(4.dp)
-            .clickable { onItemClicked() },
+            .clickable { onItemClicked(cocktail) },
         shape = RoundedCornerShape(38.dp),
     ) {
         Box {
