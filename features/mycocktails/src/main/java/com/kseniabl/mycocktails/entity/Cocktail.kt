@@ -11,5 +11,5 @@ data class Cocktail (
     val recipe: String = "",
     val ingredients: List<String> = emptyList(),
     // hardcode image
-    val image: Int
+    val image: String
 ): Parcelable

@@ -59,6 +59,8 @@ dependencies {
     implementation("androidx.compose.material3:material3")
     implementation("androidx.navigation:navigation-compose:2.6.0")
 
+    implementation("io.coil-kt:coil-compose:2.4.0")
+
     // hilt
     implementation ("com.google.dagger:hilt-android:2.47")
     kapt ("com.google.dagger:hilt-compiler:2.47")

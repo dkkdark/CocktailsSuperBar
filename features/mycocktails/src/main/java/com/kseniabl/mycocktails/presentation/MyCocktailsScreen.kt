@@ -1,5 +1,6 @@
 package com.kseniabl.mycocktails.presentation
 
+import android.net.Uri
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -46,17 +47,21 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.rememberAsyncImagePainter
 import com.kseniabl.mycocktails.R
 import com.kseniabl.mycocktails.entity.Cocktail
 import com.kseniabl.mycocktails.presentation.bottombar.BottomBarWithFabShape
 import com.kseniabl.theme.AppBlue
 import com.kseniabl.theme.DidactGothic
+import java.io.File
 
 @Composable
 fun EmptyCocktailsScreen(
@@ -189,6 +194,13 @@ fun CocktailElement(
     val matrix = ColorMatrix()
     matrix.setToSaturation(0.7F)
 
+    val context = LocalContext.current
+    var imageUri: Uri? = null
+    if (cocktail.image.isNotEmpty()) {
+        val file = File(context.filesDir, cocktail.image)
+        imageUri = Uri.fromFile(file)
+    }
+
     Card(
         modifier = Modifier
             .size(160.dp)
@@ -199,7 +211,7 @@ fun CocktailElement(
         Box {
             Image(
                 modifier = Modifier.fillMaxSize(),
-                painter = painterResource(id = cocktail.image),
+                painter = rememberAsyncImagePainter(imageUri ?: R.drawable.cocktil1),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 colorFilter = ColorFilter.colorMatrix(matrix)

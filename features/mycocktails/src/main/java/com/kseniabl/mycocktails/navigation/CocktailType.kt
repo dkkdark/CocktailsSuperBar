@@ -5,7 +5,7 @@ import androidx.navigation.NavType
 import com.google.gson.Gson
 import com.kseniabl.mycocktails.entity.Cocktail
 
-class CocktailTypeConverter : NavType<Cocktail>(isNullableAllowed = false) {
+class CocktailType : NavType<Cocktail>(isNullableAllowed = false) {
     override fun get(bundle: Bundle, key: String): Cocktail? {
         return bundle.getParcelable(key)
     }

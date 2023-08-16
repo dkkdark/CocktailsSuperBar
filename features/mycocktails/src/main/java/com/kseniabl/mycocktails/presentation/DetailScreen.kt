@@ -1,5 +1,7 @@
 package com.kseniabl.mycocktails.presentation
 
+import android.net.Uri
+import android.util.Log
 import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
@@ -34,18 +36,28 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.rememberAsyncImagePainter
 import com.kseniabl.mycocktails.R
 import com.kseniabl.mycocktails.entity.Cocktail
 import com.kseniabl.theme.AppBlue
 import com.kseniabl.theme.DidactGothic
+import java.io.File
 
 @Composable
 fun DetailScreen(cocktail: Cocktail?) {
+    val context = LocalContext.current
+    var imageUri: Uri? = null
+    if (!cocktail?.image.isNullOrEmpty()) {
+        val file = File(context.filesDir, cocktail!!.image)
+        imageUri = Uri.fromFile(file)
+    }
+
     var unrollInfo by remember { mutableStateOf(false) }
     val draggableState = rememberDraggableState {
         unrollInfo = it < 0
@@ -76,7 +88,7 @@ fun DetailScreen(cocktail: Cocktail?) {
                 .fillMaxWidth()
                 .height(330.dp)
                 .align(Alignment.TopCenter),
-            painter = painterResource(id = R.drawable.cocktil1),
+            painter = rememberAsyncImagePainter(imageUri ?: R.drawable.cocktil1),
             contentDescription = null,
             contentScale = ContentScale.Crop
         )

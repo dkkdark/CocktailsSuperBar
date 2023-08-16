@@ -16,18 +16,20 @@ class CreateCocktailViewModel @Inject constructor(
     private val _state = MutableStateFlow<SavingCocktailState?>(null)
     val state = _state.asStateFlow()
 
-    fun checkFields(title: String, description: String, recipe: String, ingredients: List<String>, time: Long) {
+    fun checkFields(title: String, description: String, recipe: String, ingredients: List<String>,
+                    time: Long, fileName: String?) {
         if (title.length >= 3) {
-            saveCocktail(title, description, recipe, ingredients, time)
+            saveCocktail(title, description, recipe, ingredients, time, fileName)
         }
         else {
             _state.value = SavingCocktailState.NotCorrectDate
         }
     }
 
-    private fun saveCocktail(name: String, description: String, recipe: String, ingredients: List<String>, time: Long) {
+    private fun saveCocktail(name: String, description: String, recipe: String, ingredients: List<String>,
+                             time: Long, fileName: String?) {
         try {
-            saveCocktailUseCase(name, description, recipe, ingredients, time)
+            saveCocktailUseCase(name, description, recipe, ingredients, time, fileName)
             _state.value = SavingCocktailState.Success
         } catch (e: Exception) {
             _state.value = SavingCocktailState.Error

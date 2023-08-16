@@ -1,5 +1,9 @@
 package com.kseniabl.makecocktail.ui
 
+import android.content.Context
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -60,6 +64,7 @@ import androidx.compose.ui.focus.focusTarget
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -68,6 +73,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.rememberAsyncImagePainter
 import com.kseniabl.makecocktail.R
 import com.kseniabl.theme.AppBlue
 import com.kseniabl.theme.DidactGothic
@@ -123,6 +129,15 @@ fun CreateCocktailScreen(
         }
     }
 
+    val context = LocalContext.current
+
+    var selectedImage by remember { mutableStateOf<Uri?>(null) }
+    val galleryLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) {
+            selectedImage = it
+        }
+
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -132,8 +147,12 @@ fun CreateCocktailScreen(
         verticalArrangement = Arrangement.Top
     ) {
         Image(
-            modifier = Modifier.size(200.dp),
-            painter = painterResource(id = R.drawable.placeholder),
+            modifier = Modifier
+                .size(200.dp)
+                .clickable {
+                    galleryLauncher.launch("image/*")
+                },
+            painter = rememberAsyncImagePainter(if (selectedImage != null) selectedImage else R.drawable.placeholder),
             contentDescription = null,
             contentScale = ContentScale.Fit
         )
@@ -151,7 +170,22 @@ fun CreateCocktailScreen(
         Spacer(modifier = Modifier.height(24.dp))
         CocktailButton(text = "Save", textColor = Color.White, buttonColor = AppBlue) {
             val time = Calendar.getInstance().time.time
-            viewModel.checkFields(title, description, recipe, ingredients, time)
+            var filename: String? = null
+            if (selectedImage != null) {
+                filename = "image_$time"
+
+                selectedImage?.let {
+                    val inputStream = context.contentResolver.openInputStream(it)
+                    val byteArray = inputStream?.readBytes()
+                    inputStream?.close()
+
+                    context.openFileOutput(filename, Context.MODE_PRIVATE).use {
+                        it.write(byteArray)
+                    }
+                }
+            }
+
+            viewModel.checkFields(title, description, recipe, ingredients, time, filename)
         }
         Spacer(modifier = Modifier.height(8.dp))
         CocktailButton(text = "Cancel", textColor = AppBlue, buttonColor = Color.White) {

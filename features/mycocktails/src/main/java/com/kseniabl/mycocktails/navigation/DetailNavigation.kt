@@ -4,7 +4,6 @@ import android.os.Build
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
-import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.kseniabl.mycocktails.entity.Cocktail
@@ -19,7 +18,7 @@ fun NavController.navigateToDetailCocktail(route: String, navOptions: NavOptions
 fun NavGraphBuilder.detailCocktailScreen() {
     composable(
         route = detailCocktailRoute,
-        arguments = listOf(navArgument("cocktail") {type = CocktailTypeConverter() })
+        arguments = listOf(navArgument("cocktail") {type = CocktailType() })
     ) { backStackEntry ->
         val cocktail = if (Build.VERSION.SDK_INT >= 33) {
             backStackEntry.arguments?.getParcelable("cocktail", Cocktail::class.java)

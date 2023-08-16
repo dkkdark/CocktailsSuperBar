@@ -12,7 +12,8 @@ class SaveCocktailUseCase @Inject constructor(
         description: String,
         recipe: String,
         ingredients: List<String>,
-        date: Long
+        date: Long,
+        image: String?
     ) {
         repository.insertCocktail(
             CocktailModel(
@@ -20,7 +21,8 @@ class SaveCocktailUseCase @Inject constructor(
                 description = description,
                 recipe = recipe,
                 createdAt = date,
-                ingredients = ingredients
+                ingredients = ingredients,
+                image = image ?: ""
             )
         )
     }

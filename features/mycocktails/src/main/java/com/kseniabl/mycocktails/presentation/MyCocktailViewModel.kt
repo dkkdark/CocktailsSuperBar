@@ -34,8 +34,7 @@ class MyCocktailViewModel @Inject constructor(
                     el.description,
                     el.recipe,
                     el.ingredients.sortedBy { el.createdAt },
-                    // just hardcode image
-                    R.drawable.cocktil1
+                    el.image
                 )
             }
         }

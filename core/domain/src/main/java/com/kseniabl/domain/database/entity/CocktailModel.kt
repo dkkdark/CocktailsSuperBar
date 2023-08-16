@@ -11,5 +11,6 @@ data class CocktailModel(
     val description: String = "",
     val recipe: String = "",
     val createdAt: Long = 0,
-    val ingredients: List<String> = emptyList()
+    val ingredients: List<String> = emptyList(),
+    val image: String = ""
 )
