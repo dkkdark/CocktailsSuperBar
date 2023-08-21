@@ -1,4 +1,4 @@
-package com.kseniabl.domain.database.entity
+package com.kseniabl.data.local.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

@@ -1,12 +1,12 @@
-package com.kseniabl.domain.di
+package com.kseniabl.data.di
 
 import android.content.Context
 import androidx.room.Room
-import com.kseniabl.domain.database.CocktailDatabase
-import com.kseniabl.domain.database.CocktailDatabase.Companion.DATABASE_NAME
-import com.kseniabl.domain.database.dao.CocktailDao
+import com.kseniabl.data.local.dao.CocktailDao
+import com.kseniabl.data.local.database.CocktailDatabase
+import com.kseniabl.data.local.database.CocktailDatabase.Companion.DATABASE_NAME
+import com.kseniabl.data.repository.CocktailDatabaseRepositoryImpl
 import com.kseniabl.domain.repository.CocktailDatabaseRepository
-import com.kseniabl.domain.repository.CocktailDatabaseRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

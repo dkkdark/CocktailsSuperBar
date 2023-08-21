@@ -1,8 +1,7 @@
-package com.kseniabl.domain.database
+package com.kseniabl.data.local
 
 import androidx.room.TypeConverter
 import com.google.gson.Gson
-import com.kseniabl.domain.database.entity.CocktailModel
 
 class TypeConverter {
     @TypeConverter

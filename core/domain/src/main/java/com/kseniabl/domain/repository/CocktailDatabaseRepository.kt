@@ -1,11 +1,13 @@
 package com.kseniabl.domain.repository
 
-import com.kseniabl.domain.database.entity.CocktailModel
+import com.kseniabl.domain.models.Cocktail
 import kotlinx.coroutines.flow.Flow
 
 interface CocktailDatabaseRepository {
-    fun getCocktails(): Flow<List<CocktailModel>>
-    fun insertCocktail(cocktail: CocktailModel)
-    fun updateCocktail(cocktail: CocktailModel)
-    fun deleteCocktail(cocktail: CocktailModel)
+    fun getCocktails(): Flow<List<Cocktail>>
+    suspend fun getCocktailById(id: Int): Cocktail?
+    fun insertOrUpdate(cocktail: Cocktail)
+    fun insertCocktail(cocktail: Cocktail)
+    fun updateCocktail(cocktail: Cocktail)
+    fun deleteCocktail(id: Int)
 }

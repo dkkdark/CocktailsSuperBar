@@ -1,6 +1,7 @@
 package com.kseniabl.cocktailsuperbar.navigation
 
 import android.net.Uri
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -18,11 +19,18 @@ fun CocktailNavHost(
     navController: NavHostController
 ) {
     NavHost(navController, startDestination = mycocktailsRoute) {
-        mycocktailsScreen(navController::navigateToCreateCocktail) { cocktail ->
-            val json = Uri.encode(Gson().toJson(cocktail))
-            navController.navigateToDetailCocktail("detailcocktail_route/$json")
-        }
+        mycocktailsScreen(
+            navigateToCreateCocktail = {
+                navController.navigateToCreateCocktail("createCocktail_route")
+        },
+            onItemClicked =  { cocktailId ->
+                navController.navigateToDetailCocktail("detailcocktail_route/$cocktailId")
+        })
         createCocktailScreen(navController::navigateToMycocktails)
-        detailCocktailScreen()
+        detailCocktailScreen(
+            navigateToEditScreen =  { id ->
+                Log.e("qqq", "111 $id")
+                navController.navigateToCreateCocktail("createCocktail_route?cocktailId=${id}")
+        })
     }
 }

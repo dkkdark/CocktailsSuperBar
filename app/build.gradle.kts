@@ -54,6 +54,8 @@ android {
 dependencies {
 
     implementation(project(":core:theme"))
+    implementation(project(":core:data"))
+    implementation(project(":core:domain"))
     implementation(project(":features:makecocktail"))
     implementation(project(":features:mycocktails"))
 

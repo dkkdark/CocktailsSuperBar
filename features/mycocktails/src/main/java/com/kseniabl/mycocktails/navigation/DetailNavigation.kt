@@ -1,30 +1,25 @@
 package com.kseniabl.mycocktails.navigation
 
-import android.os.Build
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
+import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.kseniabl.mycocktails.entity.Cocktail
 import com.kseniabl.mycocktails.presentation.DetailScreen
 
-const val detailCocktailRoute = "detailcocktail_route/{cocktail}"
+const val detailCocktailRoute = "detailcocktail_route/{cocktailId}"
 
 fun NavController.navigateToDetailCocktail(route: String, navOptions: NavOptions? = null) {
     this.navigate(route, navOptions)
 }
 
-fun NavGraphBuilder.detailCocktailScreen() {
+fun NavGraphBuilder.detailCocktailScreen(navigateToEditScreen: (Int?) -> Unit) {
     composable(
         route = detailCocktailRoute,
-        arguments = listOf(navArgument("cocktail") {type = CocktailType() })
+        arguments = listOf(navArgument("cocktailId") {type = NavType.IntType })
     ) { backStackEntry ->
-        val cocktail = if (Build.VERSION.SDK_INT >= 33) {
-            backStackEntry.arguments?.getParcelable("cocktail", Cocktail::class.java)
-        } else {
-            @Suppress("DEPRECATION") backStackEntry.arguments?.getParcelable("cocktail")
-        }
-        DetailScreen(cocktail)
+        val cocktailId = backStackEntry.arguments?.getInt("cocktailId")
+        DetailScreen(cocktailId, navigateToEditScreen = navigateToEditScreen)
     }
 }

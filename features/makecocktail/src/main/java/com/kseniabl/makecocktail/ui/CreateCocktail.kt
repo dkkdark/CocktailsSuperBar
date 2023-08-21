@@ -2,6 +2,7 @@ package com.kseniabl.makecocktail.ui
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.LinearEasing
@@ -11,13 +12,11 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,15 +25,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.relocation.BringIntoViewRequester
-import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -51,21 +47,19 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.focus.focusTarget
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
@@ -74,43 +68,65 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
+import com.kseniabl.domain.models.Cocktail
 import com.kseniabl.makecocktail.R
 import com.kseniabl.theme.AppBlue
 import com.kseniabl.theme.DidactGothic
-import kotlinx.coroutines.launch
+import java.io.File
 import java.util.Calendar
 
 @Composable
 fun CreateCocktailScreen(
     navigateToMyCocktails: () -> Unit,
-    viewModel: CreateCocktailViewModel = hiltViewModel()
+    viewModel: CreateCocktailViewModel = hiltViewModel(),
+    id: Int?
 ) {
+    val cocktail by viewModel.cocktail.collectAsState()
+
     val scrollableState = rememberScrollState()
 
     var showDialog by remember { mutableStateOf(false) }
-    val ingredients = remember { mutableStateListOf<String>() }
-
-    var ingredientText by remember {
-        mutableStateOf("")
-    }
-
-    var title by remember { mutableStateOf("") }
-    var description by remember { mutableStateOf("") }
-    var recipe by remember { mutableStateOf("") }
+    var ingredientText by remember { mutableStateOf("") }
 
     var initLoadingScreen by remember { mutableStateOf(false) }
     var notCorrectDataShow by remember { mutableStateOf(false) }
 
     if (initLoadingScreen) LoadingScreen()
 
+    val focusManager = LocalFocusManager.current
+    val context = LocalContext.current
+
+    var selectedImage by remember { mutableStateOf<Uri?>(null) }
+    var loadedImage by remember { mutableStateOf<Uri?>(null) }
+    val galleryLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) {
+            selectedImage = it
+        }
+
+    Log.e("qqq", "id $id , cc $cocktail")
+
+    LaunchedEffect(cocktail.image) {
+        Log.e("qqq", "image changed ${cocktail.image}")
+        if (cocktail.image.isNotEmpty()) {
+            if (cocktail.image.isNotEmpty()) {
+                val file = File(context.filesDir, cocktail.image)
+                val imageUri = Uri.fromFile(file)
+                loadedImage = imageUri
+            }
+        }
+    }
+
     LaunchedEffect(true) {
+        if (id != null)
+            viewModel.getCocktail(id)
+
         viewModel.state.collect {
             when (it) {
                 is CreateCocktailViewModel.SavingCocktailState.Loading -> {
                     notCorrectDataShow = false
                     initLoadingScreen = true
                 }
-                is CreateCocktailViewModel.SavingCocktailState.Success -> {
+                is CreateCocktailViewModel.SavingCocktailState.SuccessSaving -> {
                     initLoadingScreen = false
                     notCorrectDataShow = false
                     navigateToMyCocktails()
@@ -124,19 +140,9 @@ fun CreateCocktailScreen(
                     initLoadingScreen = false
                     notCorrectDataShow = true
                 }
-                null -> {}
             }
         }
     }
-
-    val context = LocalContext.current
-
-    var selectedImage by remember { mutableStateOf<Uri?>(null) }
-    val galleryLauncher =
-        rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) {
-            selectedImage = it
-        }
-
 
     Column(
         modifier = Modifier
@@ -152,25 +158,36 @@ fun CreateCocktailScreen(
                 .clickable {
                     galleryLauncher.launch("image/*")
                 },
-            painter = rememberAsyncImagePainter(if (selectedImage != null) selectedImage else R.drawable.placeholder),
+            painter = rememberAsyncImagePainter(
+                if (loadedImage != null) loadedImage
+                else if (selectedImage != null) selectedImage
+                else R.drawable.placeholder
+            ),
             contentDescription = null,
             contentScale = ContentScale.Fit
         )
         Spacer(modifier = Modifier.height(40.dp))
-        CocktailTextField(title, "Title", "Add title", 56.dp, notCorrectDataShow) { title = it }
+        CocktailTextField(cocktail.name, "Title", "Add title", 64.dp, notCorrectDataShow) {
+            viewModel.onEventListen(CreateCocktailViewModel.SavingCocktailEvent.ChangeName(it))
+        }
         Spacer(modifier = Modifier.height(24.dp))
-        CocktailTextField(description, "Description", "Optional field", 154.dp) { description = it }
+        CocktailTextField(cocktail.description, "Description", "Optional field", 154.dp) {
+            viewModel.onEventListen(CreateCocktailViewModel.SavingCocktailEvent.ChangeDescription(it))
+        }
         Spacer(modifier = Modifier.height(24.dp))
-        IngredientsList(items = ingredients) {
+        IngredientsList(items = cocktail.ingredients) {
             ingredientText = ""
+            focusManager.clearFocus()
             showDialog = true
         }
         Spacer(modifier = Modifier.height(24.dp))
-        CocktailTextField(recipe, "Recipe", "Optional field", 154.dp) { recipe = it }
+        CocktailTextField(cocktail.recipe, "Recipe", "Optional field", 154.dp) {
+            viewModel.onEventListen(CreateCocktailViewModel.SavingCocktailEvent.ChangeRecipe(it))
+        }
         Spacer(modifier = Modifier.height(24.dp))
         CocktailButton(text = "Save", textColor = Color.White, buttonColor = AppBlue) {
             val time = Calendar.getInstance().time.time
-            var filename: String? = null
+            var filename: String? = cocktail.image
             if (selectedImage != null) {
                 filename = "image_$time"
 
@@ -185,7 +202,7 @@ fun CreateCocktailScreen(
                 }
             }
 
-            viewModel.checkFields(title, description, recipe, ingredients, time, filename)
+            viewModel.checkFields(time, filename)
         }
         Spacer(modifier = Modifier.height(8.dp))
         CocktailButton(text = "Cancel", textColor = AppBlue, buttonColor = Color.White) {
@@ -219,7 +236,10 @@ fun CreateCocktailScreen(
                 }
                 Spacer(modifier = Modifier.height(16.dp))
                 CocktailButton(text = "Add", textColor = Color.White, buttonColor = AppBlue) {
-                    ingredients.add(ingredientText)
+                    val newIngredients = mutableListOf<String>()
+                    newIngredients.addAll(cocktail.ingredients)
+                    newIngredients.add(ingredientText)
+                    viewModel.onEventListen(CreateCocktailViewModel.SavingCocktailEvent.ChangeIngredients(newIngredients))
                     showDialog = false
                 }
                 Spacer(modifier = Modifier.height(8.dp))
@@ -254,7 +274,7 @@ fun CocktailTextField(
             shape = RoundedCornerShape(24.dp),
             label = { Text(text = label) },
             textStyle = TextStyle(fontFamily = DidactGothic),
-            isError = error
+            isError = error,
         )
         Spacer(modifier = Modifier.height(4.dp))
         Text(modifier = Modifier

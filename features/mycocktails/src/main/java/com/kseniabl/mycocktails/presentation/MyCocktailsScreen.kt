@@ -53,11 +53,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import com.kseniabl.mycocktails.R
-import com.kseniabl.mycocktails.entity.Cocktail
+import com.kseniabl.domain.models.Cocktail
 import com.kseniabl.mycocktails.presentation.bottombar.BottomBarWithFabShape
 import com.kseniabl.theme.AppBlue
 import com.kseniabl.theme.DidactGothic
@@ -131,7 +130,7 @@ fun EmptyCocktailsScreen(
 fun MyCocktailsScreen(
     navigateToCreateCocktail: () -> Unit,
     viewModel: MyCocktailViewModel = hiltViewModel(),
-    onItemClicked: (Cocktail) -> Unit
+    onItemClicked: (Int) -> Unit
 ) {
     val cocktails = viewModel.cocktails.collectAsState()
     val isListEmpty = cocktails.value?.isEmpty()
@@ -157,7 +156,7 @@ fun MyCocktailsScreen(
 fun MyCocktailsContent(
     modifier: Modifier = Modifier,
     cocktailList: List<Cocktail>,
-    onItemClicked: (Cocktail) -> Unit
+    onItemClicked: (Int) -> Unit
 ) {
     val lazyGridState = rememberLazyGridState()
 
@@ -189,7 +188,7 @@ fun MyCocktailsContent(
 @Composable
 fun CocktailElement(
     cocktail: Cocktail,
-    onItemClicked: (Cocktail) -> Unit
+    onItemClicked: (Int) -> Unit
 ) {
     val matrix = ColorMatrix()
     matrix.setToSaturation(0.7F)
@@ -205,7 +204,7 @@ fun CocktailElement(
         modifier = Modifier
             .size(160.dp)
             .padding(4.dp)
-            .clickable { onItemClicked(cocktail) },
+            .clickable { onItemClicked(cocktail.id) },
         shape = RoundedCornerShape(38.dp),
     ) {
         Box {

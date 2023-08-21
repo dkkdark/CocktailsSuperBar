@@ -1,4 +1,4 @@
-package com.kseniabl.mycocktails.entity
+package com.kseniabl.domain.models
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
@@ -6,10 +6,11 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Cocktail (
+    val id: Int = 0,
     val name: String = "",
     val description: String = "",
+    val createdAt: Long = 0,
     val recipe: String = "",
     val ingredients: List<String> = emptyList(),
-    // hardcode image
-    val image: String
+    val image: String = ""
 ): Parcelable
