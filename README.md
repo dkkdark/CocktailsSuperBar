@@ -2,32 +2,16 @@
 
 Основной стэк технологий приложения: jetpack compose, hilt, room, корутины. 
 Я использовала паттерн проектирования MVVM, разбила приложение на модули и постаралась придерживаться Clean Architecture при написании кода.
-
-Удалось реализовать самое основное:
-
-![Screenshot_20230808_223414_Cockt](https://github.com/dkkdark/CocktailsSuperBar/assets/49618961/7f066410-ec4a-46b0-809c-f19b1e945aa1)
+Картинка для коктеля сохраняется в виде ссыли на изображение.
 
 
-![Screenshot_20230808_223700_Cockt](https://github.com/dkkdark/CocktailsSuperBar/assets/49618961/1e35f3dd-5d4d-4ab0-8df4-3f2e4ae64692)
+![ezgif-5-3340c724b3](https://github.com/dkkdark/CocktailsSuperBar/assets/49618961/51576bf0-b451-4417-8a53-615062985b91)
 
 
-
-При сохранинии во viewModel вызывается useCase.
-
-
-![Screenshot_20230808_223752_Cockt](https://github.com/dkkdark/CocktailsSuperBar/assets/49618961/bcf16625-5309-4e8b-9479-d0ca3b9a45cc)
+![ezgif-5-d0b11ea08b](https://github.com/dkkdark/CocktailsSuperBar/assets/49618961/36dd7afa-f0b3-4eb0-93d9-9570f0b730a3)
 
 
-То же самое здесь.
-
-![Screenshot_20230808_223921_Cockt](https://github.com/dkkdark/CocktailsSuperBar/assets/49618961/a1076800-0923-47a3-96b2-eedc4a1a4d81)
+![ezgif-5-97ced41c8d](https://github.com/dkkdark/CocktailsSuperBar/assets/49618961/9438f5a9-ee9b-4f92-801f-42faeac38032)
 
 
-
-То, что не удалось:
-
-- Удаление и изменение существуют только в dao, для них осталось написать usecase.
-
-- Контейнер для FAB я бы делала с помощью canvas, в том числе при использовании xml.
-
-- Картинку для коктеля я бы сохраняла в виде ссыли на изображение.
+![ezgif-5-3c0b27ff92](https://github.com/dkkdark/CocktailsSuperBar/assets/49618961/538bcdc3-a59a-42db-8b12-a89670f37698)
