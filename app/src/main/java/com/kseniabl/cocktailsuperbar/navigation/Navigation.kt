@@ -29,8 +29,9 @@ fun CocktailNavHost(
         createCocktailScreen(navController::navigateToMycocktails)
         detailCocktailScreen(
             navigateToEditScreen =  { id ->
-                Log.e("qqq", "111 $id")
                 navController.navigateToCreateCocktail("createCocktail_route?cocktailId=${id}")
-        })
+            },
+            navigateToMyCocktails = navController::navigateToMycocktails
+        )
     }
 }

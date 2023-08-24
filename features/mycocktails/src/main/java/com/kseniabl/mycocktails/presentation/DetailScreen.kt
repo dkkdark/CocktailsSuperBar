@@ -13,16 +13,19 @@ import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -32,6 +35,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -56,19 +60,22 @@ import java.io.File
 fun DetailScreen(
     cocktailId: Int?,
     viewModel: DetailViewModel = hiltViewModel(),
-    navigateToEditScreen: (Int?) -> Unit
+    navigateToEditScreen: (Int?) -> Unit,
+    navigateToMyCocktails: () -> Unit
 ) {
-    var cocktail by remember {
-        mutableStateOf(Cocktail())
+    val cocktail by viewModel.cocktail.collectAsState()
+
+    var showDeleteAlertDialog by remember {
+        mutableStateOf(false)
     }
 
     LaunchedEffect(true) {
         viewModel.getCocktail(cocktailId)
 
-        viewModel.cocktail.collect {
+        viewModel.cocktailState.collect {
             when(it) {
-                is DetailViewModel.CocktailDetailsState.Success -> {
-                    cocktail = it.content
+                is DetailViewModel.CocktailDetailsState.ShowDialog -> {
+                    showDeleteAlertDialog = it.show
                 }
                 is DetailViewModel.CocktailDetailsState.Error -> {
                 }
@@ -119,6 +126,7 @@ fun DetailScreen(
             contentDescription = null,
             contentScale = ContentScale.Crop
         )
+        DeleteMarker(viewModel)
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -197,16 +205,24 @@ fun DetailScreen(
                 navigateToEditScreen(cocktailId)
             }
         }
-        Icon(
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .padding(8.dp)
-                .clickable {
+    }
+
+    if (showDeleteAlertDialog) {
+        AlertDialog(
+            onDismissRequest = { showDeleteAlertDialog = false },
+            confirmButton = {
+                CocktailButton(text = "Yes", textColor = Color.White, buttonColor = AppBlue) {
                     viewModel.deleteCocktail(cocktail)
-                },
-            imageVector = Icons.Default.Delete,
-            contentDescription = null,
-            tint = Color.Red
+                    viewModel.showDialog(false)
+                    navigateToMyCocktails()
+                }
+            },
+            dismissButton = {
+                CocktailButton(text = "Cancel", textColor = AppBlue, buttonColor = MaterialTheme.colorScheme.background) {
+                    viewModel.showDialog(false)
+                }
+            },
+            title = { Text("Do you want to delete this cocktail?") }
         )
     }
 }
@@ -226,10 +242,35 @@ fun CocktailButton(
         onClick = { onButtonClick() },
         colors = ButtonDefaults.buttonColors(containerColor = buttonColor),
         border = if (textColor != Color.White) BorderStroke(1.dp, textColor) else BorderStroke(
-            1.dp,
+            0.dp,
             buttonColor
         )
     ) {
         Text(text, fontFamily = DidactGothic, fontSize = 24.sp, color = textColor)
+    }
+}
+
+@Composable
+fun BoxScope.DeleteMarker(
+    viewModel: DetailViewModel
+) {
+    Card(modifier = Modifier
+        .size(48.dp)
+        .align(Alignment.TopEnd)
+        .padding(8.dp)
+        .clickable {
+            viewModel.showDialog(true)
+        },
+        shape = RoundedCornerShape(8.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.background,
+        )
+    ) {
+        Icon(
+            modifier = Modifier.fillMaxSize().padding(4.dp),
+            imageVector = Icons.Default.Delete,
+            contentDescription = null,
+            tint = Color.Red
+        )
     }
 }

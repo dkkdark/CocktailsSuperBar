@@ -14,12 +14,13 @@ fun NavController.navigateToDetailCocktail(route: String, navOptions: NavOptions
     this.navigate(route, navOptions)
 }
 
-fun NavGraphBuilder.detailCocktailScreen(navigateToEditScreen: (Int?) -> Unit) {
+fun NavGraphBuilder.detailCocktailScreen(navigateToEditScreen: (Int?) -> Unit, navigateToMyCocktails: () -> Unit) {
     composable(
         route = detailCocktailRoute,
         arguments = listOf(navArgument("cocktailId") {type = NavType.IntType })
     ) { backStackEntry ->
         val cocktailId = backStackEntry.arguments?.getInt("cocktailId")
-        DetailScreen(cocktailId, navigateToEditScreen = navigateToEditScreen)
+        DetailScreen(cocktailId, navigateToEditScreen = navigateToEditScreen,
+            navigateToMyCocktails = navigateToMyCocktails)
     }
 }
